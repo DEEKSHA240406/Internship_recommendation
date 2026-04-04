@@ -64,7 +64,7 @@ export default function InternshipUserDialog({ open, onClose, internshipId, fetc
   const fetchSectors = async () => {
     setLoadingSectors(true);
     try {
-      const response = await axios.get('http://localhost:8070/api/sectors');
+      const response = await axios.get('https://internship-recommendation-u8d3.onrender.com/api/sectors');
       setAvailableSectors(response.data.sectors || []);
     } catch (error) {
       console.error('Error fetching sectors:', error);
@@ -77,7 +77,9 @@ export default function InternshipUserDialog({ open, onClose, internshipId, fetc
   const fetchInternshipDetails = async () => {
     setLoadingInternship(true);
     try {
-      const response = await axios.get(`http://localhost:8070/api/internships/internships/${internshipId}`);
+      const response = await axios.get(
+        `https://internship-recommendation-u8d3.onrender.com/api/internships/internships/${internshipId}`
+      );
       const fetchedData = response.data;
 
       setInternshipData({
@@ -136,7 +138,7 @@ export default function InternshipUserDialog({ open, onClose, internshipId, fetc
       };
 
       const response = await axios.put(
-        `http://localhost:8070/api/internships/admin/internships/${internshipId}`,
+        `https://internship-recommendation-u8d3.onrender.com/api/internships/admin/internships/${internshipId}`,
         dataToSubmit,
         { headers: { Authorization: `Bearer ${token}` } }
       );

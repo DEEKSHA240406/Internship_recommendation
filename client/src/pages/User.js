@@ -25,9 +25,9 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import IconButton from '@mui/material/IconButton';  
+import IconButton from '@mui/material/IconButton';
 import axios from 'axios';
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // components
 import Page from '../components/Page';
@@ -41,7 +41,7 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 
 const TABLE_HEAD = [
   { id: 'view', label: 'View', alignRight: false },
-  { id: 'email', label: 'Email', alignRight: false }, 
+  { id: 'email', label: 'Email', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'phone', label: 'Phone', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
@@ -77,16 +77,12 @@ function applySortFilter(array, comparator, query, roleFilter) {
 
   // Apply text query filter
   if (query) {
-    filteredArray = filteredArray.filter((user) =>
-      user.email.toLowerCase().includes(query.toLowerCase())
-    );
+    filteredArray = filteredArray.filter((user) => user.email.toLowerCase().includes(query.toLowerCase()));
   }
 
   // Apply role filter
   if (roleFilter) {
-    filteredArray = filteredArray.filter((user) =>
-      user.role.toLowerCase() === roleFilter.toLowerCase()
-    );
+    filteredArray = filteredArray.filter((user) => user.role.toLowerCase() === roleFilter.toLowerCase());
   }
 
   return filteredArray;
@@ -105,15 +101,12 @@ export default function User() {
   const [users, setUsers] = useState([]);
   const [editingUserId, setEditingUserId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
-  const [name,setName] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   // const [role, setRole] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [viewModalOpen, setViewModalOpen] = useState(false);
-
-
-
 
   // Fetch users from the server on component mount
   useEffect(() => {
@@ -123,15 +116,15 @@ export default function User() {
   // Fetch users from the server
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:8070/api/auth/admin/users',{
+      const response = await axios.get('https://internship-recommendation-u8d3.onrender.com/api/auth/admin/users', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       }); // Ensure this matches your backend endpoint
       console.log(response.data);
       setUsers(response.data);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error('Error fetching users:', error);
     }
   };
 
@@ -178,21 +171,16 @@ export default function User() {
     setFilterName(event.target.value);
   };
 
-
   const handleViewUser = (user) => {
     // Open a modal or set state to display user details
     setSelectedUser(user); // Assuming you have state to hold selected user data
     setViewModalOpen(true); // Open the modal for viewing user details
   };
 
-
-
-
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
 
   // Apply sorting and filtering
   const filteredUsers = applySortFilter(users, getComparator(order, orderBy), filterName, roleFilter);
-
 
   const isUserNotFound = filteredUsers.length === 0;
 
@@ -214,7 +202,6 @@ export default function User() {
             onRoleFilterChange={(e) => setRoleFilter(e.target.value)}
           />
 
-
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -229,7 +216,7 @@ export default function User() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, name,email,phone, role } = row; // Adjust based on your actual data structure
+                    const { _id, name, email, phone, role } = row; // Adjust based on your actual data structure
                     const isItemSelected = selected.indexOf(email) !== -1;
 
                     return (
@@ -241,14 +228,15 @@ export default function User() {
                         selected={isItemSelected}
                         aria-checked={isItemSelected}
                       >
-<TableCell align="left">
-  <IconButton onClick={() => handleViewUser(row)} aria-label="view user">
-    <Iconify icon="eva:eye-fill" />
-  </IconButton>
-</TableCell>
+                        <TableCell align="left">
+                          <IconButton onClick={() => handleViewUser(row)} aria-label="view user">
+                            <Iconify icon="eva:eye-fill" />
+                          </IconButton>
+                        </TableCell>
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={email} src="/path/to/default/avatar.png" /> {/* Use a default avatar or user's avatar */}
+                            <Avatar alt={email} src="/path/to/default/avatar.png" />{' '}
+                            {/* Use a default avatar or user's avatar */}
                             <Typography variant="subtitle2" noWrap>
                               {email}
                             </Typography>
@@ -257,7 +245,6 @@ export default function User() {
                         <TableCell align="left">{name}</TableCell>
                         <TableCell align="left">{phone}</TableCell>
                         <TableCell align="left">{role}</TableCell>
-
                       </TableRow>
                     );
                   })}
@@ -292,41 +279,20 @@ export default function User() {
           />
         </Card>
 
-          {/* View User Modal */}
-
+        {/* View User Modal */}
 
         <Dialog open={viewModalOpen} onClose={() => setViewModalOpen(false)}>
           <DialogTitle>User Details</DialogTitle>
           <DialogContent>
-            <TextField
-              label="Name"
-              value={selectedUser?.name}
-              fullWidth
-              margin="normal"
-              disabled
-            />
-            <TextField 
-              label="Email"
-              value={selectedUser?.email}
-              fullWidth
-              margin="normal"
-              disabled
-            />
-            <TextField
-              label="Role"
-              value={selectedUser?.role}
-              fullWidth
-              margin="normal"
-              disabled
-            />
+            <TextField label="Name" value={selectedUser?.name} fullWidth margin="normal" disabled />
+            <TextField label="Email" value={selectedUser?.email} fullWidth margin="normal" disabled />
+            <TextField label="Role" value={selectedUser?.role} fullWidth margin="normal" disabled />
             {/* Add more fields as necessary */}
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setViewModalOpen(false)}>Close</Button>
           </DialogActions>
         </Dialog>
-
-
       </Container>
     </Page>
   );

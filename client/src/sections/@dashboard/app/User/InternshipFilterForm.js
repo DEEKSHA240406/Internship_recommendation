@@ -71,7 +71,7 @@ export default function InternshipFilterForm({ filters, onFilterChange, onResetF
   const fetchSectors = async () => {
     setLoadingSectors(true);
     try {
-      const response = await axios.get('http://localhost:8070/api/sectors');
+      const response = await axios.get('https://internship-recommendation-u8d3.onrender.com/api/sectors');
       setAvailableSectors(response.data.sectors || []);
     } catch (error) {
       console.error('Error fetching sectors:', error);

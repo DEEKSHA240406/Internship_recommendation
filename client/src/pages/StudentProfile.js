@@ -120,7 +120,7 @@ const StudentProfileCreation = () => {
   const fetchSectors = async () => {
     setLoadingSectors(true);
     try {
-      const response = await axios.get('http://localhost:8070/api/sectors');
+      const response = await axios.get('https://internship-recommendation-u8d3.onrender.com/api/sectors');
       setAvailableSectors(response.data.sectors || []);
     } catch (error) {
       console.error('Error fetching sectors:', error);
@@ -488,13 +488,13 @@ const StudentProfileCreation = () => {
     try {
       setIsLoadingRecommendations(true);
 
-      await axios.post('http://localhost:8070/api/auth/profile/create', profileData, {
+      await axios.post('https://internship-recommendation-u8d3.onrender.com/api/auth/profile/create', profileData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       const userId = localStorage.getItem('id');
       const recommendationsResponse = await axios.get(
-        `http://localhost:8070/api/internships/recommendations/${userId}`,
+        `https://internship-recommendation-u8d3.onrender.com/api/internships/recommendations/${userId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 

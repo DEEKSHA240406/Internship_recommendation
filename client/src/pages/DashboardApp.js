@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { 
-  Grid, 
-  Container, 
-  Typography, 
-  FormControl, 
-  InputLabel, 
-  Select, 
+import {
+  Grid,
+  Container,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
   MenuItem,
   Card,
   CardContent,
   Box,
-  Button
+  Button,
 } from '@mui/material';
 // components
 import axios from 'axios';
@@ -69,21 +69,23 @@ export default function DashboardApp() {
     try {
       setLoading(true);
       const [dashboardRes, userRes, internshipRes, notificationRes] = await Promise.all([
-        axios.get('http://localhost:8070/api/stats/dashboard', {
-          headers: { Authorization: `Bearer ${token}` }
+        axios.get('https://internship-recommendation-u8d3.onrender.com/api/stats/dashboard', {
+          headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get('http://localhost:8070/api/stats/users', {
-          headers: { Authorization: `Bearer ${token}` }
+        axios.get('https://internship-recommendation-u8d3.onrender.com/api/stats/users', {
+          headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get('http://localhost:8070/api/stats/internships', {
-          headers: { Authorization: `Bearer ${token}` }
+        axios.get('https://internship-recommendation-u8d3.onrender.com/api/stats/internships', {
+          headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get('http://localhost:8070/api/stats/notifications', {
-          headers: { Authorization: `Bearer ${token}` }
-        }).catch(err => {
-          console.warn('Notification stats not available:', err);
-          return { data: {} };
-        })
+        axios
+          .get('https://internship-recommendation-u8d3.onrender.com/api/stats/notifications', {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .catch((err) => {
+            console.warn('Notification stats not available:', err);
+            return { data: {} };
+          }),
       ]);
 
       setStats(dashboardRes.data || {});
@@ -91,7 +93,7 @@ export default function DashboardApp() {
       setInternshipAnalytics(internshipRes.data || {});
       setNotificationStats(notificationRes.data || {});
     } catch (error) {
-      console.error("Error fetching statistics:", error);
+      console.error('Error fetching statistics:', error);
     } finally {
       setLoading(false);
     }
@@ -103,76 +105,76 @@ export default function DashboardApp() {
 
   // Get chart data based on selected category - UPDATED to handle sector names
   const getChartData = () => {
-  let data = [];
-  
-  switch (selectedCategory) {
-    case 'locationStats': {
-      data = internshipAnalytics.locationStats || [];
-      return {
-        labels: data.map(item => item._id || 'Unknown'),
-        values: data.map(item => item.count || 0)
-      };
+    let data = [];
+
+    switch (selectedCategory) {
+      case 'locationStats': {
+        data = internshipAnalytics.locationStats || [];
+        return {
+          labels: data.map((item) => item._id || 'Unknown'),
+          values: data.map((item) => item.count || 0),
+        };
+      }
+      case 'sectorStats': {
+        data = internshipAnalytics.sectorStats || [];
+        return {
+          labels: data.map((item) => item.name || item._id || 'Unknown Sector'),
+          values: data.map((item) => item.count || 0),
+        };
+      }
+      case 'skillsDemand': {
+        data = internshipAnalytics.skillsDemand || [];
+        return {
+          labels: data.map((item) => item._id || 'Unknown'),
+          values: data.map((item) => item.count || 0),
+        };
+      }
+      case 'topCompanies': {
+        data = internshipAnalytics.topCompanies || [];
+        return {
+          labels: data.map((item) => item._id || 'Unknown'),
+          values: data.map((item) => item.count || 0),
+        };
+      }
+      case 'topSectorInterests': {
+        data = userAnalytics.topSectorInterests || [];
+        return {
+          labels: data.map((item) => item.name || item._id || 'Unknown Sector'),
+          values: data.map((item) => item.count || 0),
+        };
+      }
+      case 'languageStats': {
+        data = userAnalytics.languageStats || [];
+        const languageNames = {
+          'en-IN': 'English',
+          'hi-IN': 'Hindi',
+          'ta-IN': 'Tamil',
+          'mr-IN': 'Marathi',
+          'gu-IN': 'Gujarati',
+          'te-IN': 'Telugu',
+          'kn-IN': 'Kannada',
+          'ml-IN': 'Malayalam',
+          'bn-IN': 'Bengali',
+          'pa-IN': 'Punjabi',
+        };
+        return {
+          labels: data.map((item) => languageNames[item._id] || item._id || 'Unknown'),
+          values: data.map((item) => item.count || 0),
+        };
+      }
+      default: {
+        return {
+          labels: [],
+          values: [],
+        };
+      }
     }
-    case 'sectorStats': {
-      data = internshipAnalytics.sectorStats || [];
-      return {
-        labels: data.map(item => item.name || item._id || 'Unknown Sector'),
-        values: data.map(item => item.count || 0)
-      };
-    }
-    case 'skillsDemand': {
-      data = internshipAnalytics.skillsDemand || [];
-      return {
-        labels: data.map(item => item._id || 'Unknown'),
-        values: data.map(item => item.count || 0)
-      };
-    }
-    case 'topCompanies': {
-      data = internshipAnalytics.topCompanies || [];
-      return {
-        labels: data.map(item => item._id || 'Unknown'),
-        values: data.map(item => item.count || 0)
-      };
-    }
-    case 'topSectorInterests': {
-      data = userAnalytics.topSectorInterests || [];
-      return {
-        labels: data.map(item => item.name || item._id || 'Unknown Sector'),
-        values: data.map(item => item.count || 0)
-      };
-    }
-    case 'languageStats': {
-      data = userAnalytics.languageStats || [];
-      const languageNames = {
-        'en-IN': 'English',
-        'hi-IN': 'Hindi',
-        'ta-IN': 'Tamil',
-        'mr-IN': 'Marathi',
-        'gu-IN': 'Gujarati',
-        'te-IN': 'Telugu',
-        'kn-IN': 'Kannada',
-        'ml-IN': 'Malayalam',
-        'bn-IN': 'Bengali',
-        'pa-IN': 'Punjabi'
-      };
-      return {
-        labels: data.map(item => languageNames[item._id] || item._id || 'Unknown'),
-        values: data.map(item => item.count || 0)
-      };
-    }
-    default: {
-      return {
-        labels: [],
-        values: []
-      };
-    }
-  }
-};
+  };
 
   const chartData = getChartData();
 
   // User Dashboard Content
-  if (userRole === 'user') {  
+  if (userRole === 'user') {
     return <StudentDashboard />;
   }
 
@@ -281,11 +283,7 @@ export default function DashboardApp() {
                 { label: 'Paused', value: stats.internships?.paused || 0 },
                 { label: 'Closed', value: stats.internships?.closed || 0 },
               ]}
-              chartColors={[
-                theme.palette.success.main,
-                theme.palette.warning.main,
-                theme.palette.error.main,
-              ]}
+              chartColors={[theme.palette.success.main, theme.palette.warning.main, theme.palette.error.main]}
             />
           </Grid>
 
@@ -295,21 +293,16 @@ export default function DashboardApp() {
               title="Email Notifications"
               subheader="User email notification preferences"
               chartData={[
-                { 
-                  label: 'Enabled', 
-                  value: (userAnalytics.emailNotificationStats || [])
-                    .find(stat => stat._id === true)?.count || 0 
+                {
+                  label: 'Enabled',
+                  value: (userAnalytics.emailNotificationStats || []).find((stat) => stat._id === true)?.count || 0,
                 },
-                { 
-                  label: 'Disabled', 
-                  value: (userAnalytics.emailNotificationStats || [])
-                    .find(stat => stat._id === false)?.count || 0 
+                {
+                  label: 'Disabled',
+                  value: (userAnalytics.emailNotificationStats || []).find((stat) => stat._id === false)?.count || 0,
                 },
               ]}
-              chartColors={[
-                theme.palette.success.main,
-                theme.palette.grey[400],
-              ]}
+              chartColors={[theme.palette.success.main, theme.palette.grey[400]]}
             />
           </Grid>
 
@@ -318,9 +311,9 @@ export default function DashboardApp() {
             <AppCurrentVisits
               title="Top Skills"
               subheader="Most popular skills among users"
-              chartData={(userAnalytics.topSkills || []).slice(0, 6).map(skill => ({
+              chartData={(userAnalytics.topSkills || []).slice(0, 6).map((skill) => ({
                 label: skill._id,
-                value: skill.count
+                value: skill.count,
               }))}
               chartColors={[
                 theme.palette.primary.main,
@@ -366,18 +359,12 @@ export default function DashboardApp() {
                   Quick Statistics
                 </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  <Typography variant="body2">
-                    New Users This Month: {stats.recent?.newUsersThisMonth || 0}
-                  </Typography>
+                  <Typography variant="body2">New Users This Month: {stats.recent?.newUsersThisMonth || 0}</Typography>
                   <Typography variant="body2">
                     New Internships This Month: {stats.recent?.newInternshipsThisMonth || 0}
                   </Typography>
-                  <Typography variant="body2">
-                    Email Coverage: {notificationStats.emailCoverage || 0}%
-                  </Typography>
-                  <Typography variant="body2">
-                    Active Internships: {stats.internships?.active || 0}
-                  </Typography>
+                  <Typography variant="body2">Email Coverage: {notificationStats.emailCoverage || 0}%</Typography>
+                  <Typography variant="body2">Active Internships: {stats.internships?.active || 0}</Typography>
                 </Box>
               </CardContent>
             </Card>
@@ -387,7 +374,9 @@ export default function DashboardApp() {
           <Grid item xs={12} md={12} lg={8}>
             <AppWebsiteVisits
               title="Analytics Overview"
-              subheader={`Distribution of ${categoryOptions.find((c) => c.key === selectedCategory)?.label || 'Analytics'}`}
+              subheader={`Distribution of ${
+                categoryOptions.find((c) => c.key === selectedCategory)?.label || 'Analytics'
+              }`}
               chartLabels={chartData.labels}
               chartData={[
                 {
@@ -424,7 +413,9 @@ export default function DashboardApp() {
           <Grid item xs={12} md={6}>
             <AppConversionRates
               title="Detailed Breakdown"
-              subheader={`${categoryOptions.find((c) => c.key === selectedCategory)?.label || 'Analytics'} Detailed View`}
+              subheader={`${
+                categoryOptions.find((c) => c.key === selectedCategory)?.label || 'Analytics'
+              } Detailed View`}
               chartData={chartData.labels.slice(0, 10).map((label, index) => ({
                 label: label.length > 20 ? `${label.substring(0, 20)}...` : label,
                 value: chartData.values[index] || 0,

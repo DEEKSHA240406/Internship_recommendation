@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
-import { 
-    Toolbar, 
-    Tooltip, 
-    IconButton, 
-    Typography, 
-    OutlinedInput, 
-    InputAdornment, 
-    Card, 
-    Box, 
-    TextField, 
-    Button, 
-    useMediaQuery 
+import {
+  Toolbar,
+  Tooltip,
+  IconButton,
+  Typography,
+  OutlinedInput,
+  InputAdornment,
+  Card,
+  Box,
+  TextField,
+  Button,
+  useMediaQuery,
 } from '@mui/material';
 import { useTheme } from '@emotion/react';
 import axios from 'axios';
@@ -83,23 +83,23 @@ InternshipListToolbar.propTypes = {
   selectedIds: PropTypes.array,
 };
 
-export default function InternshipListToolbar({ 
-  numSelected, 
-  filterName, 
-  onFilterName, 
-  filters, 
-  onFilterChange, 
-  onResetFilters, 
-  selectedIds 
+export default function InternshipListToolbar({
+  numSelected,
+  filterName,
+  onFilterName,
+  filters,
+  onFilterChange,
+  onResetFilters,
+  selectedIds,
 }) {
   const [showFilter, setShowFilter] = useState(false);
   const [showNotificationPopup, setShowNotificationPopup] = useState(false);
   const [notificationData, setNotificationData] = useState({
     minMatchScore: 50,
-    customMessage: ''
+    customMessage: '',
   });
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const token = localStorage.getItem('token');
@@ -111,24 +111,24 @@ export default function InternshipListToolbar({
 
   const handleTriggerNotifications = async () => {
     if (selectedIds.length === 0) {
-      toast.warning("Please select internships to send notifications for");
+      toast.warning('Please select internships to send notifications for');
       return;
     }
 
     setIsLoading(true);
     try {
-      const promises = selectedIds.map(internshipId => 
+      const promises = selectedIds.map((internshipId) =>
         axios.post(
-          `http://localhost:8070/api/internships/admin/internships/${internshipId}/notify`,
+          `https://internship-recommendation-u8d3.onrender.com/api/internships/admin/internships/${internshipId}/notify`,
           { minMatchScore: notificationData.minMatchScore },
           { headers: { Authorization: `Bearer ${token}` } }
         )
       );
 
       const results = await Promise.allSettled(promises);
-      
-      const successful = results.filter(result => result.status === 'fulfilled').length;
-      const failed = results.filter(result => result.status === 'rejected').length;
+
+      const successful = results.filter((result) => result.status === 'fulfilled').length;
+      const failed = results.filter((result) => result.status === 'rejected').length;
 
       if (successful > 0) {
         toast.success(`Notifications triggered for ${successful} internships successfully`);
@@ -174,10 +174,10 @@ export default function InternshipListToolbar({
 
           {showFilter && (
             <DropdownCard isMobile={isMobile}>
-              <InternshipFilterForm 
-                filters={filters} 
-                onFilterChange={handleFilterChange} 
-                onResetFilters={onResetFilters} 
+              <InternshipFilterForm
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                onResetFilters={onResetFilters}
               />
             </DropdownCard>
           )}
@@ -200,32 +200,30 @@ export default function InternshipListToolbar({
           <Typography variant="body2" color="text.secondary" paragraph>
             Send targeted notifications to users who match the selected internships.
           </Typography>
-          
+
           <TextField
             fullWidth
             type="number"
             label="Minimum Match Score (%)"
             value={notificationData.minMatchScore}
-            onChange={(e) => setNotificationData(prev => ({ 
-              ...prev, 
-              minMatchScore: Math.max(0, Math.min(100, parseInt(e.target.value,10) || 0))
-            }))}
+            onChange={(e) =>
+              setNotificationData((prev) => ({
+                ...prev,
+                minMatchScore: Math.max(0, Math.min(100, parseInt(e.target.value, 10) || 0)),
+              }))
+            }
             inputProps={{ min: 0, max: 100 }}
             sx={{ mb: 2 }}
             helperText="Only notify users with match score above this threshold"
           />
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1 }}>
-            <Button 
-              variant="outlined" 
-              onClick={() => setShowNotificationPopup(false)}
-              disabled={isLoading}
-            >
+            <Button variant="outlined" onClick={() => setShowNotificationPopup(false)} disabled={isLoading}>
               Cancel
             </Button>
-            <Button 
-              variant="contained" 
-              color="primary" 
+            <Button
+              variant="contained"
+              color="primary"
               onClick={handleTriggerNotifications}
               disabled={isLoading}
               startIcon={isLoading ? null : <Iconify icon="eva:bell-fill" />}
@@ -233,7 +231,7 @@ export default function InternshipListToolbar({
               {isLoading ? 'Sending...' : `Notify Users`}
             </Button>
           </Box>
-          
+
           <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
             This will send push notifications to users with matching profiles.
           </Typography>

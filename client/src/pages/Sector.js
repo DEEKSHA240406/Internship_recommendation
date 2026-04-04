@@ -25,9 +25,9 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import IconButton from '@mui/material/IconButton';  
+import IconButton from '@mui/material/IconButton';
 import axios from 'axios';
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // components
 import Page from '../components/Page';
@@ -37,11 +37,10 @@ import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, SectorListToolbar, UserMoreMenu } from '../sections/@dashboard/app/User';
 
-
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id:'view',label: 'View',alignRight:false},
+  { id: 'view', label: 'View', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'action', label: 'Action', alignRight: false },
 ];
@@ -64,7 +63,6 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-
 function applySortFilter(array, comparator, query, roleFilter) {
   // Add safety check to ensure array is actually an array
   if (!Array.isArray(array)) {
@@ -83,15 +81,15 @@ function applySortFilter(array, comparator, query, roleFilter) {
 
   // Apply text query filter
   if (query) {
-    filteredArray = filteredArray.filter((sector) =>
-      sector.name && sector.name.toLowerCase().includes(query.toLowerCase())
+    filteredArray = filteredArray.filter(
+      (sector) => sector.name && sector.name.toLowerCase().includes(query.toLowerCase())
     );
   }
 
   // Apply role filter (if needed for sectors)
   if (roleFilter) {
-    filteredArray = filteredArray.filter((sector) =>
-      sector.role && sector.role.toLowerCase() === roleFilter.toLowerCase()
+    filteredArray = filteredArray.filter(
+      (sector) => sector.role && sector.role.toLowerCase() === roleFilter.toLowerCase()
     );
   }
 
@@ -111,14 +109,11 @@ export default function Sector() {
   const [sectors, setSectors] = useState([]);
   const [editingUserId, setEditingUserId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
-  const [name,setName] = useState('');
+  const [name, setName] = useState('');
   // const [role, setRole] = useState('');
   const [selectedSector, setSelectedSector] = useState(null);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-
-
-
 
   // Fetch sectors from the server on component mount
   useEffect(() => {
@@ -126,12 +121,12 @@ export default function Sector() {
   }, []);
 
   // Fetch sectors from the server
-      // Fetch sectors from the server
+  // Fetch sectors from the server
   const fetchSectors = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:8070/api/sectors');
-      
+      const response = await axios.get('https://internship-recommendation-u8d3.onrender.com/api/sectors');
+
       // Check if response has the expected structure
       if (response.data && response.data.success && Array.isArray(response.data.sectors)) {
         setSectors(response.data.sectors);
@@ -144,7 +139,7 @@ export default function Sector() {
         toast.error('Invalid data format received from server');
       }
     } catch (error) {
-      console.error("Error fetching sectors:", error);
+      console.error('Error fetching sectors:', error);
       setSectors([]); // Ensure it's always an array
       toast.error('Failed to fetch sectors');
     } finally {
@@ -206,14 +201,13 @@ export default function Sector() {
       second: '2-digit',
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
-  }
-
+  };
 
   // Handle opening and closing of modal for editing Sector
- const handleOpenModal = (userId) => {
+  const handleOpenModal = (userId) => {
     if (userId) {
       setEditingUserId(userId);
-      const userToEdit = sectors.find(sector => sector._id === userId);
+      const userToEdit = sectors.find((sector) => sector._id === userId);
       if (userToEdit) {
         setName(userToEdit.name || '');
       }
@@ -224,50 +218,51 @@ export default function Sector() {
     setOpenModal(true);
   };
 
-
   const handleCloseModal = () => {
     setOpenModal(false);
     setName('');
 
-
     setEditingUserId(null);
-
   };
 
   // Handle adding a new Sector
   const handleAddSector = async () => {
     try {
-
-      const response = await axios.post('http://localhost:8070/api/sectors', { name }); // Adjust based on your actual data structure
+      const response = await axios.post('https://internship-recommendation-u8d3.onrender.com/api/sectors', { name }); // Adjust based on your actual data structure
       toast.success('Sector added successfully');
       fetchSectors(); // Refresh Sector list after adding
       handleCloseModal(); // Close modal after adding
     } catch (error) {
-      console.error("Error adding Sector:", error);
+      console.error('Error adding Sector:', error);
     }
   };
 
   // Handle updating a Sector
   const handleUpdateSector = async () => {
     try {
-      const response = await axios.put(`http://localhost:8070/api/sectors/${editingUserId}`, {name}); // Adjust endpoint as necessary
+      const response = await axios.put(
+        `https://internship-recommendation-u8d3.onrender.com/api/sectors/${editingUserId}`,
+        { name }
+      ); // Adjust endpoint as necessary
       toast.success(response.data.message);
       fetchSectors(); // Refresh Sector list after updating
       handleCloseModal(); // Close modal after updating
     } catch (error) {
-      console.error("Error updating Sector:", error);
+      console.error('Error updating Sector:', error);
     }
   };
 
   // Handle deleting a Sector
   const handleDeleteSector = async (userId) => {
-    if (window.confirm("Are you sure you want to delete this Sector?")) {
+    if (window.confirm('Are you sure you want to delete this Sector?')) {
       try {
-        const response = await axios.delete(`http://localhost:8070/api/sectors/${userId}`); // Adjust endpoint as necessary
+        const response = await axios.delete(
+          `https://internship-recommendation-u8d3.onrender.com/api/sectors/${userId}`
+        ); // Adjust endpoint as necessary
         toast.success(response.data.message);
         fetchSectors(); // Refresh Sector list after deletion
       } catch (error) {
-        console.error("Error deleting Sector:", error);
+        console.error('Error deleting Sector:', error);
       }
     }
   };
@@ -278,14 +273,10 @@ export default function Sector() {
     setViewModalOpen(true); // Open the modal for viewing Sector details
   };
 
-
-
-
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sectors.length) : 0;
 
   // Apply sorting and filtering
-    const filteredSectors = applySortFilter(sectors, getComparator(order, orderBy), filterName, roleFilter);
-
+  const filteredSectors = applySortFilter(sectors, getComparator(order, orderBy), filterName, roleFilter);
 
   const isUserNotFound = filteredSectors.length === 0;
 
@@ -296,7 +287,11 @@ export default function Sector() {
           <Typography variant="h4" gutterBottom>
             Sector
           </Typography>
-          <Button variant="contained" onClick={() => handleOpenModal(null)} startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button
+            variant="contained"
+            onClick={() => handleOpenModal(null)}
+            startIcon={<Iconify icon="eva:plus-fill" />}
+          >
             New Sector
           </Button>
         </Stack>
@@ -309,7 +304,6 @@ export default function Sector() {
             roleFilter={roleFilter}
             onRoleFilterChange={(e) => setRoleFilter(e.target.value)}
           />
-
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -325,7 +319,7 @@ export default function Sector() {
                 />
                 <TableBody>
                   {filteredSectors.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, name} = row; // Adjust based on your actual data structure
+                    const { _id, name } = row; // Adjust based on your actual data structure
                     const isItemSelected = selected.indexOf(name) !== -1;
 
                     return (
@@ -337,14 +331,15 @@ export default function Sector() {
                         selected={isItemSelected}
                         aria-checked={isItemSelected}
                       >
-<TableCell align="left">
-  <IconButton onClick={() => handleViewSector(row)} aria-label="view Sector">
-    <Iconify icon="eva:eye-fill" />
-  </IconButton>
-</TableCell>
+                        <TableCell align="left">
+                          <IconButton onClick={() => handleViewSector(row)} aria-label="view Sector">
+                            <Iconify icon="eva:eye-fill" />
+                          </IconButton>
+                        </TableCell>
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src="/path/to/default/avatar.png" /> {/* Use a default avatar or Sector's avatar */}
+                            <Avatar alt={name} src="/path/to/default/avatar.png" />{' '}
+                            {/* Use a default avatar or Sector's avatar */}
                             <Typography variant="subtitle2" noWrap>
                               {name}
                             </Typography>
@@ -393,7 +388,7 @@ export default function Sector() {
 
         {/* Modal for Editing Sector */}
         <Dialog open={openModal} onClose={handleCloseModal}>
-          <DialogTitle>{editingUserId ? "Edit Sector" : "Add New Sector"}</DialogTitle>
+          <DialogTitle>{editingUserId ? 'Edit Sector' : 'Add New Sector'}</DialogTitle>
           <DialogContent>
             {/* Name Field */}
             <TextField
@@ -404,8 +399,6 @@ export default function Sector() {
               fullWidth
               margin="normal"
             />
-
-
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseModal}>Cancel</Button>
@@ -417,17 +410,10 @@ export default function Sector() {
           </DialogActions>
         </Dialog>
 
-
         <Dialog open={viewModalOpen} onClose={() => setViewModalOpen(false)}>
           <DialogTitle>Sector Details</DialogTitle>
           <DialogContent>
-            <TextField
-              label="Name"
-              value={selectedSector?.name}
-              fullWidth
-              margin="normal"
-              disabled
-            />
+            <TextField label="Name" value={selectedSector?.name} fullWidth margin="normal" disabled />
             <TextField
               label="Created At"
               value={formatDate(selectedSector?.createdAt)}
@@ -448,13 +434,7 @@ export default function Sector() {
             <Button onClick={() => setViewModalOpen(false)}>Close</Button>
           </DialogActions>
         </Dialog>
-
-
       </Container>
     </Page>
   );
 }
-
-
-
-
