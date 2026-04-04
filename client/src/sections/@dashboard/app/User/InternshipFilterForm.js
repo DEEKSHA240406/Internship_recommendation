@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
-import { 
-  Box, 
-  Toolbar, 
-  TextField, 
-  Button, 
-  Typography, 
+import {
+  Box,
+  Toolbar,
+  TextField,
+  Button,
+  Typography,
   FormControl,
   InputLabel,
   Select,
@@ -14,11 +14,10 @@ import {
   OutlinedInput,
   InputAdornment,
   Autocomplete,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import axios from 'axios';
 import Iconify from '../../../../components/Iconify';
-
 
 // ----------------------------------------------------------------------
 
@@ -62,7 +61,7 @@ export default function InternshipFilterForm({ filters, onFilterChange, onResetF
   useEffect(() => {
     // Update selected sector when filters change
     if (filters.sectors && availableSectors.length > 0) {
-      const sector = availableSectors.find(s => s.name.toLowerCase().includes(filters.sectors.toLowerCase()));
+      const sector = availableSectors.find((s) => s.name.toLowerCase().includes(filters.sectors.toLowerCase()));
       setSelectedSector(sector || null);
     } else {
       setSelectedSector(null);
@@ -100,9 +99,8 @@ export default function InternshipFilterForm({ filters, onFilterChange, onResetF
       <Typography variant="h6" gutterBottom>
         Filter Internships
       </Typography>
-      
+
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
-        
         {/* Title filter */}
         <SearchStyle
           value={filters.title || ''}
@@ -164,7 +162,7 @@ export default function InternshipFilterForm({ filters, onFilterChange, onResetF
                   {...params}
                   variant="outlined"
                   placeholder="Select a sector..."
-                  helperText="Choose from PM Internship sectors"
+                  helperText="Choose from Internship Recommendation sectors"
                 />
               )}
               fullWidth
@@ -175,11 +173,7 @@ export default function InternshipFilterForm({ filters, onFilterChange, onResetF
         {/* Status filter */}
         <FormControl variant="outlined" fullWidth>
           <InputLabel>Status</InputLabel>
-          <Select
-            value={filters.status || ''}
-            onChange={handleInputChange('status')}
-            label="Status"
-          >
+          <Select value={filters.status || ''} onChange={handleInputChange('status')} label="Status">
             <MenuItem value="">
               <em>All Statuses</em>
             </MenuItem>
@@ -192,11 +186,7 @@ export default function InternshipFilterForm({ filters, onFilterChange, onResetF
         {/* Remote Work filter */}
         <FormControl variant="outlined" fullWidth>
           <InputLabel>Remote Work</InputLabel>
-          <Select
-            value={filters.remote_ok || ''}
-            onChange={handleInputChange('remote_ok')}
-            label="Remote Work"
-          >
+          <Select value={filters.remote_ok || ''} onChange={handleInputChange('remote_ok')} label="Remote Work">
             <MenuItem value="">
               <em>All Types</em>
             </MenuItem>
@@ -237,9 +227,9 @@ export default function InternshipFilterForm({ filters, onFilterChange, onResetF
         />
 
         {/* Reset button */}
-        <Button 
-          variant="outlined" 
-          onClick={handleResetFilters} 
+        <Button
+          variant="outlined"
+          onClick={handleResetFilters}
           sx={{ mt: 2 }}
           startIcon={<Iconify icon="eva:refresh-fill" />}
         >

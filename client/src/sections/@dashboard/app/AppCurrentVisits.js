@@ -60,7 +60,7 @@ export default function AppCurrentVisits({ title, subheader, chartColors, chartD
     tooltip: {
       fillSeriesColor: false,
       y: {
-        formatter: (value) => `${fNumber(value * 1_000_000)} (original)`, 
+        formatter: (value) => `${fNumber(value)}`, 
         title: { formatter: (seriesName) => `${seriesName}` },
       },
     },

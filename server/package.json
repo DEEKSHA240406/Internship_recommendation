@@ -1,7 +1,7 @@
 {
  "name": "pm-internship-backend",
  "version": "1.0.0",
- "description": "Backend for PM Internship Scheme Recommendation Engine",
+ "description": "Backend for Internship Recommendation Recommendation Engine",
  "main": "server.js",
  "scripts": {
   "start": "nodemon server.js",

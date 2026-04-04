@@ -34,7 +34,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  CardActions
+  CardActions,
 } from '@mui/material';
 import {
   Person as PersonIcon,
@@ -62,7 +62,7 @@ import {
   Assignment as AssignmentIcon,
   DateRange as DateRangeIcon,
   Language as LanguageIcon,
-  Check as CheckIcon
+  Check as CheckIcon,
 } from '@mui/icons-material';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -76,28 +76,28 @@ const StudentDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [loadingSectors, setLoadingSectors] = useState(false);
   const [recommendationsLoading, setRecommendationsLoading] = useState(false);
-  
+
   // Edit dialog states
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [editFormData, setEditFormData] = useState({});
   const [selectedSectors, setSelectedSectors] = useState([]);
   const [saving, setSaving] = useState(false);
-  
+
   // NEW: Internship details dialog states
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [selectedInternship, setSelectedInternship] = useState(null);
-  
+
   // Email notification states - simplified for email only
   const [emailNotificationStatus, setEmailNotificationStatus] = useState({
     hasEmail: false,
     email: '',
     notificationsEnabled: false,
     notificationType: 'email',
-    status: 'disabled'
+    status: 'disabled',
   });
   const [emailNotificationLoading, setEmailNotificationLoading] = useState(false);
-  
+
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('id');
@@ -105,20 +105,79 @@ const StudentDashboard = () => {
 
   // Predefined options for autocomplete
   const skillOptions = [
-    'JavaScript', 'Python', 'Java', 'React', 'Node.js', 'SQL', 'HTML', 'CSS',
-    'Angular', 'Vue.js', 'PHP', 'C++', 'C#', 'Ruby', 'Go', 'Swift', 'Kotlin',
-    'MongoDB', 'PostgreSQL', 'MySQL', 'Redis', 'Docker', 'Kubernetes', 'AWS',
-    'Git', 'Linux', 'Machine Learning', 'Data Analysis', 'UI/UX Design',
-    'Photoshop', 'Illustrator', 'Figma', 'AutoCAD', 'SolidWorks', 'MATLAB',
-    'R Programming', 'Tableau', 'Power BI', 'Excel', 'Project Management',
-    'Digital Marketing', 'Content Writing', 'Social Media Marketing', 'SEO'
+    'JavaScript',
+    'Python',
+    'Java',
+    'React',
+    'Node.js',
+    'SQL',
+    'HTML',
+    'CSS',
+    'Angular',
+    'Vue.js',
+    'PHP',
+    'C++',
+    'C#',
+    'Ruby',
+    'Go',
+    'Swift',
+    'Kotlin',
+    'MongoDB',
+    'PostgreSQL',
+    'MySQL',
+    'Redis',
+    'Docker',
+    'Kubernetes',
+    'AWS',
+    'Git',
+    'Linux',
+    'Machine Learning',
+    'Data Analysis',
+    'UI/UX Design',
+    'Photoshop',
+    'Illustrator',
+    'Figma',
+    'AutoCAD',
+    'SolidWorks',
+    'MATLAB',
+    'R Programming',
+    'Tableau',
+    'Power BI',
+    'Excel',
+    'Project Management',
+    'Digital Marketing',
+    'Content Writing',
+    'Social Media Marketing',
+    'SEO',
   ];
 
   const locationOptions = [
-    'Remote', 'Bangalore', 'Mumbai', 'Delhi', 'Hyderabad', 'Chennai', 'Pune',
-    'Kolkata', 'Ahmedabad', 'Jaipur', 'Lucknow', 'Kanpur', 'Nagpur', 'Indore',
-    'Bhopal', 'Visakhapatnam', 'Patna', 'Vadodara', 'Ghaziabad', 'Ludhiana',
-    'Surat', 'Kochi', 'Coimbatore', 'Madurai', 'Thiruvananthapuram', 'Mysore'
+    'Remote',
+    'Bangalore',
+    'Mumbai',
+    'Delhi',
+    'Hyderabad',
+    'Chennai',
+    'Pune',
+    'Kolkata',
+    'Ahmedabad',
+    'Jaipur',
+    'Lucknow',
+    'Kanpur',
+    'Nagpur',
+    'Indore',
+    'Bhopal',
+    'Visakhapatnam',
+    'Patna',
+    'Vadodara',
+    'Ghaziabad',
+    'Ludhiana',
+    'Surat',
+    'Kochi',
+    'Coimbatore',
+    'Madurai',
+    'Thiruvananthapuram',
+    'Mysore',
   ];
 
   const languageOptions = [
@@ -134,11 +193,7 @@ const StudentDashboard = () => {
     const initializeDashboard = async () => {
       try {
         setLoading(true);
-        await Promise.all([
-          fetchStudentData(),
-          fetchSectors(),
-          fetchEmailNotificationStatus()
-        ]);
+        await Promise.all([fetchStudentData(), fetchSectors(), fetchEmailNotificationStatus()]);
       } catch (error) {
         console.error('Error initializing dashboard:', error);
         toast.error('Error loading dashboard data');
@@ -153,12 +208,12 @@ const StudentDashboard = () => {
   // Helper function to get sector names for display
   const getSectorNames = (sectorInterests) => {
     if (!sectorInterests || !Array.isArray(sectorInterests)) return [];
-    
-    return sectorInterests.map(sector => {
+
+    return sectorInterests.map((sector) => {
       if (typeof sector === 'object' && sector.name) {
         return sector.name;
       }
-      const foundSector = availableSectors.find(s => s._id === sector);
+      const foundSector = availableSectors.find((s) => s._id === sector);
       return foundSector ? foundSector.name : 'Unknown Sector';
     });
   };
@@ -180,10 +235,9 @@ const StudentDashboard = () => {
   // Fetch student profile data
   const fetchStudentData = async () => {
     try {
-      const profileResponse = await axios.get(
-        `http://localhost:8070/api/auth/profile/${userId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const profileResponse = await axios.get(`http://localhost:8070/api/auth/profile/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       if (profileResponse.data.profile) {
         setProfile(profileResponse.data.profile);
@@ -201,10 +255,9 @@ const StudentDashboard = () => {
   const fetchRecommendations = async () => {
     try {
       setRecommendationsLoading(true);
-      const response = await axios.get(
-        `http://localhost:8070/api/internships/recommendations/${userId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await axios.get(`http://localhost:8070/api/internships/recommendations/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       console.log(response.data);
       setRecommendations(response.data.recommendations || []);
     } catch (error) {
@@ -218,10 +271,9 @@ const StudentDashboard = () => {
   // Email notification functions
   const fetchEmailNotificationStatus = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8070/api/auth/status/${userId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await axios.get(`http://localhost:8070/api/auth/status/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setEmailNotificationStatus(response.data);
     } catch (error) {
       console.error('Error fetching email notification status:', error);
@@ -231,7 +283,7 @@ const StudentDashboard = () => {
         email: userEmail || '',
         notificationsEnabled: false,
         notificationType: 'email',
-        status: 'disabled'
+        status: 'disabled',
       });
     }
   };
@@ -239,17 +291,16 @@ const StudentDashboard = () => {
   // Toggle email notifications
   const toggleEmailNotifications = async (enabled) => {
     setEmailNotificationLoading(true);
-    
+
     try {
       await axios.put(
         `http://localhost:8070/api/auth/toggle/${userId}`,
         { enabled },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
+
       await fetchEmailNotificationStatus();
       toast.success(`Email notifications ${enabled ? 'enabled' : 'disabled'} successfully!`);
-      
     } catch (error) {
       console.error('Error toggling email notifications:', error);
       toast.error('Failed to update email notification settings');
@@ -281,17 +332,15 @@ const StudentDashboard = () => {
       skills: profile.skills || [],
       sector_interests: profile.sector_interests || [],
       preferred_locations: profile.preferred_locations || [],
-      language: profile.language || 'en-IN'
+      language: profile.language || 'en-IN',
     });
 
     // Initialize selected sectors for editing
     if (profile.sector_interests) {
-      const profileSectorIds = profile.sector_interests.map(sector => 
+      const profileSectorIds = profile.sector_interests.map((sector) =>
         typeof sector === 'object' ? sector._id : sector
       );
-      const sectorsToSelect = availableSectors.filter(sector => 
-        profileSectorIds.includes(sector._id)
-      );
+      const sectorsToSelect = availableSectors.filter((sector) => profileSectorIds.includes(sector._id));
       setSelectedSectors(sectorsToSelect);
     }
 
@@ -299,7 +348,7 @@ const StudentDashboard = () => {
   };
 
   const handleCompleteProfile = () => {
-    navigate('/dashboard/profile-setup');
+    navigate('/dashboard/student-profile');
   };
 
   const handleCloseEditDialog = () => {
@@ -310,34 +359,32 @@ const StudentDashboard = () => {
   };
 
   const handleFormChange = (field, value) => {
-    setEditFormData(prev => ({
+    setEditFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   const handleSectorChange = (event, newValue) => {
     setSelectedSectors(newValue);
-    setEditFormData(prev => ({
+    setEditFormData((prev) => ({
       ...prev,
-      sector_interests: newValue.map(sector => sector._id)
+      sector_interests: newValue.map((sector) => sector._id),
     }));
   };
 
   const handleSaveProfile = async () => {
     try {
       setSaving(true);
-      
+
       const updateData = {
         id: userId,
-        ...editFormData
+        ...editFormData,
       };
 
-      const response = await axios.post(
-        'http://localhost:8070/api/auth/profile/create',
-        updateData,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await axios.post('http://localhost:8070/api/auth/profile/create', updateData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       if (response.data.profile) {
         setProfile(response.data.profile);
@@ -356,9 +403,7 @@ const StudentDashboard = () => {
 
   // Tab panel component for edit dialog
   const TabPanel = ({ children, value, index }) => (
-    <div hidden={value !== index}>
-      {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
-    </div>
+    <div hidden={value !== index}>{value === index && <Box sx={{ pt: 3 }}>{children}</Box>}</div>
   );
 
   // NEW: Render internship details dialog
@@ -366,13 +411,13 @@ const StudentDashboard = () => {
     if (!selectedInternship) return null;
 
     return (
-      <Dialog 
-        open={detailsDialogOpen} 
+      <Dialog
+        open={detailsDialogOpen}
         onClose={handleCloseDetailsDialog}
         maxWidth="md"
         fullWidth
         PaperProps={{
-          sx: { maxHeight: '90vh' }
+          sx: { maxHeight: '90vh' },
         }}
       >
         <DialogTitle>
@@ -385,17 +430,13 @@ const StudentDashboard = () => {
                 {selectedInternship.company}
               </Typography>
               <Box display="flex" alignItems="center" mt={1}>
-                <Chip 
+                <Chip
                   label={`${selectedInternship.matchScore}% Match`}
                   color="primary"
                   size="small"
                   sx={{ fontWeight: 'bold', mr: 1 }}
                 />
-                <Chip 
-                  label={selectedInternship.job_id}
-                  variant="outlined"
-                  size="small"
-                />
+                <Chip label={selectedInternship.job_id} variant="outlined" size="small" />
               </Box>
             </Box>
             <IconButton onClick={handleCloseDetailsDialog} size="small">
@@ -403,7 +444,7 @@ const StudentDashboard = () => {
             </IconButton>
           </Box>
         </DialogTitle>
-        
+
         <DialogContent dividers>
           <Grid container spacing={3}>
             {/* Basic Information */}
@@ -414,23 +455,16 @@ const StudentDashboard = () => {
                     <AssignmentIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
                     Job Details
                   </Typography>
-                  
+
                   <Box mb={2}>
                     <Typography variant="subtitle2" color="text.secondary">
                       Location
                     </Typography>
                     <Box display="flex" alignItems="center" mt={0.5}>
                       <LocationIcon fontSize="small" color="action" sx={{ mr: 1 }} />
-                      <Typography variant="body1">
-                        {selectedInternship.location}
-                      </Typography>
+                      <Typography variant="body1">{selectedInternship.location}</Typography>
                       {selectedInternship.remote_ok && (
-                        <Chip 
-                          label="Remote Available" 
-                          size="small" 
-                          color="success" 
-                          sx={{ ml: 1 }} 
-                        />
+                        <Chip label="Remote Available" size="small" color="success" sx={{ ml: 1 }} />
                       )}
                     </Box>
                   </Box>
@@ -441,9 +475,7 @@ const StudentDashboard = () => {
                     </Typography>
                     <Box display="flex" alignItems="center" mt={0.5}>
                       <ScheduleIcon fontSize="small" color="action" sx={{ mr: 1 }} />
-                      <Typography variant="body1">
-                        {selectedInternship.duration}
-                      </Typography>
+                      <Typography variant="body1">{selectedInternship.duration}</Typography>
                     </Box>
                   </Box>
 
@@ -454,10 +486,9 @@ const StudentDashboard = () => {
                     <Box display="flex" alignItems="center" mt={0.5}>
                       <MonetizationOnIcon fontSize="small" color="action" sx={{ mr: 1 }} />
                       <Typography variant="body1">
-                        {selectedInternship.stipend?.amount > 0 
+                        {selectedInternship.stipend?.amount > 0
                           ? `₹${selectedInternship.stipend.amount}/month`
-                          : 'Unpaid'
-                        }
+                          : 'Unpaid'}
                       </Typography>
                     </Box>
                   </Box>
@@ -473,7 +504,6 @@ const StudentDashboard = () => {
                       </Typography>
                     </Box>
                   </Box>
-
                 </CardContent>
               </Card>
             </Grid>
@@ -486,20 +516,14 @@ const StudentDashboard = () => {
                     <BuildIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
                     Requirements
                   </Typography>
-                  
+
                   <Box mb={2}>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                       Skills Required
                     </Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                       {selectedInternship.skills_required.map((skill, index) => (
-                        <Chip 
-                          key={index} 
-                          label={skill} 
-                          size="small" 
-                          color="primary" 
-                          variant="outlined"
-                        />
+                        <Chip key={index} label={skill} size="small" color="primary" variant="outlined" />
                       ))}
                     </Box>
                   </Box>
@@ -511,57 +535,57 @@ const StudentDashboard = () => {
                       </Typography>
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                         {selectedInternship.sectors.map((sector, index) => (
-                          <Chip 
-                            key={index} 
-                            label={sector.name} 
-                            size="small" 
-                            color="secondary" 
-                            variant="filled"
-                          />
+                          <Chip key={index} label={sector.name} size="small" color="secondary" variant="filled" />
                         ))}
                       </Box>
                     </Box>
                   )}
 
-                 <Box>
+                  <Box>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                       Education Requirements
                     </Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                      {selectedInternship.eligibility?.education && selectedInternship.eligibility.education.length > 0 ? (
+                      {selectedInternship.eligibility?.education &&
+                      selectedInternship.eligibility.education.length > 0 ? (
                         selectedInternship.eligibility.education.map((edu, index) => {
                           // Check if this education requirement matches the user's qualification
-                          const isMatched = selectedInternship.eligibilityDetails?.matchedWith && 
-                                           edu.toLowerCase() === selectedInternship.eligibilityDetails.matchedWith.toLowerCase();
-                          
+                          const isMatched =
+                            selectedInternship.eligibilityDetails?.matchedWith &&
+                            edu.toLowerCase() === selectedInternship.eligibilityDetails.matchedWith.toLowerCase();
+
                           return (
-                            <Chip 
-                              key={index} 
-                              label={edu} 
-                              size="small" 
-                              color={isMatched ? "success" : "default"}
-                              variant={isMatched ? "filled" : "outlined"}
-                              sx={isMatched ? { 
-                                backgroundColor: '#4caf50',
-                                color: 'white',
-                                fontWeight: 'medium'
-                              } : {
-                                color: 'text.secondary',
-                                borderColor: 'grey.400'
-                              }}
+                            <Chip
+                              key={index}
+                              label={edu}
+                              size="small"
+                              color={isMatched ? 'success' : 'default'}
+                              variant={isMatched ? 'filled' : 'outlined'}
+                              sx={
+                                isMatched
+                                  ? {
+                                      backgroundColor: '#4caf50',
+                                      color: 'white',
+                                      fontWeight: 'medium',
+                                    }
+                                  : {
+                                      color: 'text.secondary',
+                                      borderColor: 'grey.400',
+                                    }
+                              }
                             />
                           );
                         })
                       ) : (
-                        <Chip 
-                          label="Any education level" 
-                          size="small" 
-                          color="success" 
+                        <Chip
+                          label="Any education level"
+                          size="small"
+                          color="success"
                           variant="filled"
-                          sx={{ 
+                          sx={{
                             backgroundColor: '#4caf50',
                             color: 'white',
-                            fontWeight: 'medium'
+                            fontWeight: 'medium',
                           }}
                         />
                       )}
@@ -594,13 +618,13 @@ const StudentDashboard = () => {
                     <CheckCircleIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
                     Why This Matches Your Profile ({selectedInternship.matchScore}% Match)
                   </Typography>
-                  
+
                   <List dense>
                     <ListItem>
                       <ListItemIcon>
                         <CheckIcon color="success" fontSize="small" />
                       </ListItemIcon>
-                      <ListItemText 
+                      <ListItemText
                         primary={selectedInternship.matchDetails?.skills || 'Skills alignment with your profile'}
                         primaryTypographyProps={{ color: 'success.dark' }}
                       />
@@ -609,7 +633,7 @@ const StudentDashboard = () => {
                       <ListItemIcon>
                         <CheckIcon color="success" fontSize="small" />
                       </ListItemIcon>
-                      <ListItemText 
+                      <ListItemText
                         primary={selectedInternship.matchDetails?.location || 'Location matches your preferences'}
                         primaryTypographyProps={{ color: 'success.dark' }}
                       />
@@ -618,7 +642,7 @@ const StudentDashboard = () => {
                       <ListItemIcon>
                         <CheckIcon color="success" fontSize="small" />
                       </ListItemIcon>
-                      <ListItemText 
+                      <ListItemText
                         primary={selectedInternship.matchDetails?.sectors || 'Sector aligns with your interests'}
                         primaryTypographyProps={{ color: 'success.dark' }}
                       />
@@ -635,10 +659,12 @@ const StudentDashboard = () => {
                   Ready to Apply?
                 </Typography>
                 <Typography variant="body2">
-                  This internship is part of the PM Internship Scheme. To apply, you will use the below <strong>"Apply Now"</strong> button.
+                  This internship is part of the Internship Recommendation. To apply, you will use the below{' '}
+                  <strong>"Apply Now"</strong> button.
                 </Typography>
                 <Typography variant="body2" sx={{ mt: 1 }}>
-                  <strong>Application Deadline:</strong> {new Date(selectedInternship.applicationDeadline).toLocaleDateString('en-IN')}
+                  <strong>Application Deadline:</strong>{' '}
+                  {new Date(selectedInternship.applicationDeadline).toLocaleDateString('en-IN')}
                 </Typography>
                 {selectedInternship.maxApplications && (
                   <Typography variant="body2">
@@ -651,13 +677,10 @@ const StudentDashboard = () => {
         </DialogContent>
 
         <DialogActions sx={{ p: 3 }}>
-          <Button 
-            onClick={handleCloseDetailsDialog}
-            variant="outlined"
-          >
+          <Button onClick={handleCloseDetailsDialog} variant="outlined">
             Close
           </Button>
-          <Button 
+          <Button
             variant="contained"
             color="primary"
             startIcon={<SendIcon />}
@@ -675,12 +698,7 @@ const StudentDashboard = () => {
 
   // Render edit dialog with all tabs
   const renderEditDialog = () => (
-    <Dialog 
-      open={editDialogOpen} 
-      onClose={handleCloseEditDialog}
-      maxWidth="md"
-      fullWidth
-    >
+    <Dialog open={editDialogOpen} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6">Edit Profile</Typography>
@@ -689,7 +707,7 @@ const StudentDashboard = () => {
           </IconButton>
         </Box>
       </DialogTitle>
-      
+
       <DialogContent>
         <Tabs value={activeTab} onChange={(e, newValue) => setActiveTab(newValue)}>
           <Tab label="Education" />
@@ -725,13 +743,7 @@ const StudentDashboard = () => {
             onChange={(event, newValue) => handleFormChange('skills', newValue)}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
-                <Chip
-                  variant="outlined"
-                  label={option}
-                  {...getTagProps({ index })}
-                  key={index}
-                  color="primary"
-                />
+                <Chip variant="outlined" label={option} {...getTagProps({ index })} key={index} color="primary" />
               ))
             }
             renderInput={(params) => (
@@ -748,7 +760,8 @@ const StudentDashboard = () => {
               Current skills: {editFormData.skills?.length || 0}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              Tip: Include both technical skills (programming languages, software) and soft skills (communication, leadership)
+              Tip: Include both technical skills (programming languages, software) and soft skills (communication,
+              leadership)
             </Typography>
           </Box>
         </TabPanel>
@@ -783,7 +796,7 @@ const StudentDashboard = () => {
                   {...params}
                   label="Industry Sector Interests"
                   placeholder="Select sectors you're interested in..."
-                  helperText="Choose sectors from the official PM Internship Scheme that align with your career goals"
+                  helperText="Choose sectors from the official Internship Recommendation that align with your career goals"
                 />
               )}
             />
@@ -808,13 +821,7 @@ const StudentDashboard = () => {
             onChange={(event, newValue) => handleFormChange('preferred_locations', newValue)}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
-                <Chip
-                  variant="filled"
-                  color="info"
-                  label={option}
-                  {...getTagProps({ index })}
-                  key={index}
-                />
+                <Chip variant="filled" color="info" label={option} {...getTagProps({ index })} key={index} />
               ))
             }
             renderInput={(params) => (
@@ -854,8 +861,8 @@ const StudentDashboard = () => {
           </FormControl>
           <Box mt={2}>
             <Typography variant="body2" color="text.secondary">
-              This language will be used for email notifications and system communications.
-              All official communications will be available in your selected language.
+              This language will be used for email notifications and system communications. All official communications
+              will be available in your selected language.
             </Typography>
           </Box>
         </TabPanel>
@@ -867,17 +874,19 @@ const StudentDashboard = () => {
               Email Notification Settings
             </Typography>
             <Typography variant="body2" color="text.secondary" paragraph>
-              Stay updated with personalized internship opportunities delivered directly to your email inbox.
-              Perfect for busy schedules and ensures you never miss matching opportunities.
+              Stay updated with personalized internship opportunities delivered directly to your email inbox. Perfect
+              for busy schedules and ensures you never miss matching opportunities.
             </Typography>
-            
-            <Box sx={{ 
-              border: '1px solid', 
-              borderColor: emailNotificationStatus.status === 'enabled' ? 'success.main' : 'grey.300',
-              borderRadius: 2, 
-              p: 3,
-              bgcolor: emailNotificationStatus.status === 'enabled' ? 'success.light' : 'grey.50'
-            }}>
+
+            <Box
+              sx={{
+                border: '1px solid',
+                borderColor: emailNotificationStatus.status === 'enabled' ? 'success.main' : 'grey.300',
+                borderRadius: 2,
+                p: 3,
+                bgcolor: emailNotificationStatus.status === 'enabled' ? 'success.light' : 'grey.50',
+              }}
+            >
               <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
                 <Box display="flex" alignItems="center" gap={2}>
                   {emailNotificationStatus.status === 'enabled' ? (
@@ -899,7 +908,7 @@ const StudentDashboard = () => {
                     )}
                   </Box>
                 </Box>
-                
+
                 <FormControlLabel
                   control={
                     <Switch
@@ -912,26 +921,26 @@ const StudentDashboard = () => {
                   label={emailNotificationStatus.notificationsEnabled ? 'ON' : 'OFF'}
                 />
               </Box>
-               
+
               {emailNotificationStatus.status === 'enabled' && (
                 <Alert severity="success" sx={{ mt: 2 }}>
                   <Typography variant="body2">
-                    Perfect! You'll receive email notifications for internships with 50%+ compatibility match.
-                    All emails are sent in your preferred language.
+                    Perfect! You'll receive email notifications for internships with 50%+ compatibility match. All
+                    emails are sent in your preferred language.
                   </Typography>
                 </Alert>
               )}
-              
+
               {emailNotificationStatus.status === 'disabled' && (
                 <Alert severity="info" sx={{ mt: 2 }}>
                   <Typography variant="body2">
-                    Enable email notifications to receive personalized internship recommendations! 
-                    We only send high-quality matches to keep your inbox clean and relevant.
+                    Enable email notifications to receive personalized internship recommendations! We only send
+                    high-quality matches to keep your inbox clean and relevant.
                   </Typography>
                 </Alert>
               )}
             </Box>
-            
+
             <Box mt={3}>
               <Typography variant="subtitle2" gutterBottom>
                 What emails will you receive?
@@ -947,7 +956,7 @@ const StudentDashboard = () => {
                   Application deadline reminders for internships you've shown interest in
                 </Typography>
                 <Typography component="li" variant="body2" color="text.secondary">
-                  Important updates about the PM Internship Scheme
+                  Important updates about the Internship Recommendation
                 </Typography>
               </Box>
             </Box>
@@ -957,9 +966,9 @@ const StudentDashboard = () => {
                 Email Delivery Promise
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                We respect your inbox! Maximum 2-3 emails per week for active opportunities.
-                All emails are personalized, relevant, and you can unsubscribe anytime.
-                No spam, no irrelevant content - only valuable internship opportunities.
+                We respect your inbox! Maximum 2-3 emails per week for active opportunities. All emails are
+                personalized, relevant, and you can unsubscribe anytime. No spam, no irrelevant content - only valuable
+                internship opportunities.
               </Typography>
             </Box>
           </Box>
@@ -967,14 +976,11 @@ const StudentDashboard = () => {
       </DialogContent>
 
       <DialogActions sx={{ p: 3 }}>
-        <Button 
-          onClick={handleCloseEditDialog}
-          disabled={saving}
-        >
+        <Button onClick={handleCloseEditDialog} disabled={saving}>
           Cancel
         </Button>
-        <Button 
-          variant="contained" 
+        <Button
+          variant="contained"
           onClick={handleSaveProfile}
           disabled={saving}
           startIcon={saving ? <CircularProgress size={20} /> : <SaveIcon />}
@@ -992,7 +998,9 @@ const StudentDashboard = () => {
         <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
           <Box textAlign="center">
             <LinearProgress sx={{ width: 300, mb: 2 }} />
-            <Typography variant="h6" color="primary">Loading your dashboard...</Typography>
+            <Typography variant="h6" color="primary">
+              Loading your dashboard...
+            </Typography>
             <Typography variant="body2" color="text.secondary">
               Preparing your personalized recommendations
             </Typography>
@@ -1007,9 +1015,9 @@ const StudentDashboard = () => {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Typography variant="h4" gutterBottom>
-          Welcome to PM Internship Scheme
+          Welcome to Internship Recommendation
         </Typography>
-        
+
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Alert severity="warning" sx={{ mb: 3 }}>
@@ -1017,15 +1025,10 @@ const StudentDashboard = () => {
                 Complete Your Profile to Get Started
               </Typography>
               <Typography variant="body1" paragraph>
-                To receive personalized internship recommendations, please complete your profile 
-                with your education, skills, and career interests.
+                To receive personalized internship recommendations, please complete your profile with your education,
+                skills, and career interests.
               </Typography>
-              <Button 
-                variant="contained" 
-                onClick={handleCompleteProfile}
-                startIcon={<PersonIcon />}
-                size="large"
-              >
+              <Button variant="contained" onClick={handleCompleteProfile} startIcon={<PersonIcon />} size="large">
                 Complete Profile Now
               </Button>
             </Alert>
@@ -1045,7 +1048,7 @@ const StudentDashboard = () => {
             Welcome back, {profile.name}!
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
-            PM Internship Scheme - Your personalized dashboard
+            Internship Recommendation - Your personalized dashboard
           </Typography>
         </Box>
         <Box display="flex" gap={2}>
@@ -1061,11 +1064,7 @@ const StudentDashboard = () => {
               {emailNotificationLoading ? 'Enabling...' : 'Enable Email Alerts'}
             </Button>
           )}
-          <Button
-            variant="contained"
-            startIcon={<EditIcon />}
-            onClick={handleEditProfile}
-          >
+          <Button variant="contained" startIcon={<EditIcon />} onClick={handleEditProfile}>
             Edit Profile
           </Button>
         </Box>
@@ -1075,13 +1074,13 @@ const StudentDashboard = () => {
         {/* Email notification alert for disabled notifications */}
         {emailNotificationStatus.status === 'disabled' && (
           <Grid item xs={12}>
-            <Alert 
-              severity="warning" 
+            <Alert
+              severity="warning"
               sx={{ mb: 2 }}
               action={
-                <Button 
-                  color="inherit" 
-                  size="small" 
+                <Button
+                  color="inherit"
+                  size="small"
                   onClick={() => toggleEmailNotifications(true)}
                   disabled={emailNotificationLoading}
                 >
@@ -1091,7 +1090,8 @@ const StudentDashboard = () => {
             >
               <Typography variant="subtitle2">Don't miss perfect internship matches!</Typography>
               <Typography variant="body2">
-                Enable email notifications to get personalized internship recommendations delivered directly to {userEmail}
+                Enable email notifications to get personalized internship recommendations delivered directly to{' '}
+                {userEmail}
               </Typography>
             </Alert>
           </Grid>
@@ -1111,13 +1111,13 @@ const StudentDashboard = () => {
                     {userEmail}
                   </Typography>
                   <Typography variant="caption" color="primary">
-                    PM Internship Scheme Candidate
+                    Internship Recommendation Candidate
                   </Typography>
                 </Box>
               </Box>
-              
+
               <Divider sx={{ my: 2 }} />
-              
+
               <Box mb={2}>
                 <Box display="flex" alignItems="center" mb={1}>
                   <SchoolIcon color="primary" sx={{ mr: 1 }} />
@@ -1133,10 +1133,10 @@ const StudentDashboard = () => {
                   <LocationIcon color="primary" sx={{ mr: 1 }} />
                   <Typography variant="subtitle2">Language Preference</Typography>
                 </Box>
-                <Chip 
-                  label={languageOptions.find(l => l.code === profile.language)?.name || 'English'} 
-                  size="small" 
-                  color="primary" 
+                <Chip
+                  label={languageOptions.find((l) => l.code === profile.language)?.name || 'English'}
+                  size="small"
+                  color="primary"
                 />
               </Box>
 
@@ -1145,9 +1145,9 @@ const StudentDashboard = () => {
                   <EmailIcon color="primary" sx={{ mr: 1 }} />
                   <Typography variant="subtitle2">Email Notifications</Typography>
                 </Box>
-                <Chip 
-                  label={emailNotificationStatus.status === 'enabled' ? 'Active' : 'Disabled'} 
-                  size="small" 
+                <Chip
+                  label={emailNotificationStatus.status === 'enabled' ? 'Active' : 'Disabled'}
+                  size="small"
                   color={emailNotificationStatus.status === 'enabled' ? 'success' : 'default'}
                   variant={emailNotificationStatus.status === 'enabled' ? 'filled' : 'outlined'}
                 />
@@ -1165,24 +1165,14 @@ const StudentDashboard = () => {
                   <BuildIcon color="primary" sx={{ mr: 1 }} />
                   <Typography variant="h6">Skills</Typography>
                 </Box>
-                <Chip 
-                  label={profile.skills?.length || 0} 
-                  size="small" 
-                  color="primary" 
-                />
+                <Chip label={profile.skills?.length || 0} size="small" color="primary" />
               </Box>
-              
+
               <Box sx={{ maxHeight: 150, overflowY: 'auto' }}>
                 {profile.skills && profile.skills.length > 0 ? (
                   <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
                     {profile.skills.map((skill, index) => (
-                      <Chip
-                        key={index}
-                        label={skill}
-                        size="small"
-                        variant="outlined"
-                        color="primary"
-                      />
+                      <Chip key={index} label={skill} size="small" variant="outlined" color="primary" />
                     ))}
                   </Stack>
                 ) : (
@@ -1204,24 +1194,14 @@ const StudentDashboard = () => {
                   <BusinessIcon color="primary" sx={{ mr: 1 }} />
                   <Typography variant="h6">Sector Interests</Typography>
                 </Box>
-                <Chip 
-                  label={profile.sector_interests?.length || 0} 
-                  size="small" 
-                  color="secondary" 
-                />
+                <Chip label={profile.sector_interests?.length || 0} size="small" color="secondary" />
               </Box>
-              
+
               <Box sx={{ maxHeight: 150, overflowY: 'auto' }}>
                 {getSectorNames(profile.sector_interests).length > 0 ? (
                   <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
                     {getSectorNames(profile.sector_interests).map((sectorName, index) => (
-                      <Chip
-                        key={index}
-                        label={sectorName}
-                        size="small"
-                        variant="filled"
-                        color="secondary"
-                      />
+                      <Chip key={index} label={sectorName} size="small" variant="filled" color="secondary" />
                     ))}
                   </Stack>
                 ) : (
@@ -1243,24 +1223,14 @@ const StudentDashboard = () => {
                   <LocationIcon color="primary" sx={{ mr: 1 }} />
                   <Typography variant="h6">Preferred Locations</Typography>
                 </Box>
-                <Chip 
-                  label={profile.preferred_locations?.length || 0} 
-                  size="small" 
-                  color="info" 
-                />
+                <Chip label={profile.preferred_locations?.length || 0} size="small" color="info" />
               </Box>
-              
+
               <Box>
                 {profile.preferred_locations && profile.preferred_locations.length > 0 ? (
                   <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
                     {profile.preferred_locations.map((location, index) => (
-                      <Chip
-                        key={index}
-                        label={location}
-                        size="small"
-                        variant="filled"
-                        color="info"
-                      />
+                      <Chip key={index} label={location} size="small" variant="filled" color="info" />
                     ))}
                   </Stack>
                 ) : (
@@ -1281,7 +1251,7 @@ const StudentDashboard = () => {
                 <TrendingUpIcon color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6">Profile Summary</Typography>
               </Box>
-              
+
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'primary.light' }}>
@@ -1335,11 +1305,9 @@ const StudentDashboard = () => {
               <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
                 <Box display="flex" alignItems="center">
                   <WorkIcon color="primary" sx={{ mr: 1 }} />
-                  <Typography variant="h6">
-                    Personalized Internship Recommendations
-                  </Typography>
+                  <Typography variant="h6">Personalized Internship Recommendations</Typography>
                 </Box>
-                <IconButton 
+                <IconButton
                   onClick={handleRefreshRecommendations}
                   disabled={recommendationsLoading}
                   color="primary"
@@ -1362,32 +1330,32 @@ const StudentDashboard = () => {
                     </Box>
                   );
                 }
-                
+
                 if (recommendations.length > 0) {
                   return (
                     <>
                       <Typography variant="body2" color="text.secondary" paragraph>
-                        Found {recommendations.length} internship{recommendations.length > 1 ? 's' : ''} matching your profile. 
-                        Sorted by compatibility score.
+                        Found {recommendations.length} internship{recommendations.length > 1 ? 's' : ''} matching your
+                        profile. Sorted by compatibility score.
                       </Typography>
                       <Grid container spacing={2}>
                         {recommendations.map((internship, index) => (
                           <Grid item xs={12} md={6} key={index}>
-                            <Card 
+                            <Card
                               variant="outlined"
-                              sx={{ 
+                              sx={{
                                 height: '100%',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                border: '1px solid', 
+                                border: '1px solid',
                                 borderColor: 'primary.light',
                                 '&:hover': {
                                   borderColor: 'primary.main',
                                   boxShadow: 3,
                                   transform: 'translateY(-2px)',
-                                  transition: 'all 0.2s ease-in-out'
+                                  transition: 'all 0.2s ease-in-out',
                                 },
-                                position: 'relative'
+                                position: 'relative',
                               }}
                             >
                               <CardContent sx={{ flexGrow: 1 }}>
@@ -1395,18 +1363,18 @@ const StudentDashboard = () => {
                                   <Typography variant="h6" color="primary" sx={{ fontWeight: 600 }}>
                                     {internship.title}
                                   </Typography>
-                                  <Chip 
+                                  <Chip
                                     label={`${internship.matchScore || 85}% Match`}
                                     color="primary"
                                     size="small"
                                     sx={{ fontWeight: 'bold' }}
                                   />
                                 </Box>
-                                
+
                                 <Typography variant="subtitle1" color="text.secondary" gutterBottom>
                                   {internship.company}
                                 </Typography>
-                                
+
                                 <Box display="flex" alignItems="center" mb={2}>
                                   <LocationIcon fontSize="small" color="action" sx={{ mr: 1 }} />
                                   <Typography variant="body2" color="text.secondary">
@@ -1425,12 +1393,12 @@ const StudentDashboard = () => {
                                     </Typography>
                                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                                       {internship.sectors.map((sector, idx) => (
-                                        <Chip 
-                                          key={idx} 
-                                          label={sector.name} 
-                                          size="small" 
-                                          color="secondary" 
-                                          variant="outlined" 
+                                        <Chip
+                                          key={idx}
+                                          label={sector.name}
+                                          size="small"
+                                          color="secondary"
+                                          variant="outlined"
                                         />
                                       ))}
                                     </Box>
@@ -1438,14 +1406,22 @@ const StudentDashboard = () => {
                                 )}
 
                                 {/* Match details */}
-                                <Box mt={2} sx={{ 
-                                  bgcolor: 'success.light', 
-                                  p: 2, 
-                                  borderRadius: 1,
-                                  border: '1px solid',
-                                  borderColor: 'success.main'
-                                }}>
-                                  <Typography variant="caption" color="success.dark" display="block" sx={{ fontWeight: 600 }}>
+                                <Box
+                                  mt={2}
+                                  sx={{
+                                    bgcolor: 'success.light',
+                                    p: 2,
+                                    borderRadius: 1,
+                                    border: '1px solid',
+                                    borderColor: 'success.main',
+                                  }}
+                                >
+                                  <Typography
+                                    variant="caption"
+                                    color="success.dark"
+                                    display="block"
+                                    sx={{ fontWeight: 600 }}
+                                  >
                                     Why this matches you:
                                   </Typography>
                                   <Typography variant="caption" color="success.dark" display="block">
@@ -1462,28 +1438,18 @@ const StudentDashboard = () => {
                                 {/* Stipend and duration */}
                                 <Box mt={2} display="flex" justifyContent="space-between" alignItems="center">
                                   {internship.stipend?.amount > 0 ? (
-                                    <Chip 
-                                      label={`₹${internship.stipend.amount}/month`} 
-                                      size="small" 
-                                      color="success" 
+                                    <Chip
+                                      label={`₹${internship.stipend.amount}/month`}
+                                      size="small"
+                                      color="success"
                                       variant="filled"
                                     />
                                   ) : (
-                                    <Chip 
-                                      label="Unpaid" 
-                                      size="small" 
-                                      color="default" 
-                                      variant="outlined"
-                                    />
+                                    <Chip label="Unpaid" size="small" color="default" variant="outlined" />
                                   )}
-                                  
+
                                   {internship.duration && (
-                                    <Chip 
-                                      label={internship.duration} 
-                                      size="small" 
-                                      color="info" 
-                                      variant="outlined"
-                                    />
+                                    <Chip label={internship.duration} size="small" color="info" variant="outlined" />
                                   )}
                                 </Box>
 
@@ -1495,7 +1461,7 @@ const StudentDashboard = () => {
                                   </Box>
                                 )}
                               </CardContent>
-                              
+
                               {/* NEW: Card Actions with View Details button */}
                               <CardActions sx={{ pt: 0, px: 2, pb: 2 }}>
                                 <Button
@@ -1512,7 +1478,7 @@ const StudentDashboard = () => {
                                   startIcon={<SendIcon />}
                                   onClick={() => {
                                     // Direct application redirect
-                                     window.open(internship.websiteLink, '_blank');
+                                    window.open(internship.websiteLink, '_blank');
                                   }}
                                   fullWidth
                                 >
@@ -1526,23 +1492,22 @@ const StudentDashboard = () => {
                     </>
                   );
                 }
-                
+
                 return (
                   <Alert severity="info" sx={{ textAlign: 'center' }}>
                     <Typography variant="body1" gutterBottom>
                       No matching internships found at the moment.
                     </Typography>
                     <Typography variant="body2" paragraph>
-                      Don't worry! New internships are added regularly. 
-                      {emailNotificationStatus.status === 'enabled' 
+                      Don't worry! New internships are added regularly.
+                      {emailNotificationStatus.status === 'enabled'
                         ? " We'll email you when perfect matches become available!"
-                        : " Enable email notifications to get alerted when new opportunities match your profile."
-                      }
+                        : ' Enable email notifications to get alerted when new opportunities match your profile.'}
                     </Typography>
                     {emailNotificationStatus.status === 'disabled' && (
-                      <Button 
-                        variant="contained" 
-                        size="small" 
+                      <Button
+                        variant="contained"
+                        size="small"
                         startIcon={<EmailIcon />}
                         onClick={() => toggleEmailNotifications(true)}
                         disabled={emailNotificationLoading}
@@ -1565,9 +1530,9 @@ const StudentDashboard = () => {
                 Email Notifications Active
               </Typography>
               <Typography variant="body2">
-                You're all set! We'll send personalized internship recommendations to {emailNotificationStatus.email} 
-                in {languageOptions.find(l => l.code === profile.language)?.name || 'English'}.
-                Check your inbox regularly for new opportunities.
+                You're all set! We'll send personalized internship recommendations to {emailNotificationStatus.email}
+                in {languageOptions.find((l) => l.code === profile.language)?.name || 'English'}. Check your inbox
+                regularly for new opportunities.
               </Typography>
             </Alert>
           </Grid>
@@ -1576,7 +1541,7 @@ const StudentDashboard = () => {
 
       {/* Edit Profile Dialog */}
       {renderEditDialog()}
-      
+
       {/* NEW: Internship Details Dialog */}
       {renderInternshipDetailsDialog()}
     </Container>
